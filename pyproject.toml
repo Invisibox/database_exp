@@ -1,0 +1,27 @@
+[project]
+name = "database-exp"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Invisibox", email = "fortunateli@outlook.com" }
+]
+dependencies = [
+    "pymysql>=1.1.1",
+    "cryptography>=43.0.3",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/database_exp"]
