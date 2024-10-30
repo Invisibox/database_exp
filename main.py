@@ -7,6 +7,7 @@ import sv_ttk
 import backend.backend as backend  # 导入后端函数
 from student import *
 from book import *
+from employee import *
 
 class LoginWindow:
     def __init__(self, master, app):
@@ -119,6 +120,36 @@ class LibraryManagementApp:
         self.delete_book = DeleteBookWindow(self.main_frame, self)
         self.delete_book.show()
 
+    def show_employee_management(self):
+        self.main_menu.hide()
+        self.employee_management = EmployeeManagementWindow(self.main_frame, self)
+        self.employee_management.show()
+
+    def show_add_employee(self):
+        self.employee_management.hide()
+        self.add_employee = AddEmployeeWindow(self.main_frame, self)
+        self.add_employee.show()
+
+    def show_view_employees(self):
+        self.employee_management.hide()
+        self.view_employees = ViewEmployeesWindow(self.main_frame, self)
+        self.view_employees.show()
+
+    def show_update_employee(self):
+        self.employee_management.hide()
+        self.update_employee = UpdateEmployeeWindow(self.main_frame, self)
+        self.update_employee.show()
+
+    def show_delete_employee(self):
+        self.employee_management.hide()
+        self.delete_employee = DeleteEmployeeWindow(self.main_frame, self)
+        self.delete_employee.show()
+
+    def show_update_employee_account(self):
+        self.employee_management.hide()
+        self.update_employee_account = UpdateEmployeeAccountWindow(self.main_frame, self)
+        self.update_employee_account.show()
+
     def go_back(self, current_window, previous_window):
         current_window.hide()
         previous_window.show()
@@ -136,6 +167,9 @@ class MainMenu:
 
         self.book_btn = ttk.Button(self.frame, text="书籍管理", command=self.app.show_book_management, width=30)
         self.book_btn.pack(pady=10, ipady=5)
+
+        self.employee_btn = ttk.Button(self.frame, text="员工管理", command=self.app.show_employee_management, width=30)
+        self.employee_btn.pack(pady=10, ipady=5)
         # 你可以在这里添加其他管理部分的按钮
 
     def show(self):
