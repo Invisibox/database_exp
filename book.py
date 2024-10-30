@@ -93,6 +93,7 @@ class ViewBooksWindow:
         self.master = master
         self.app = app
         self.frame = ttk.Frame(self.master)
+        self.selected_view = tk.StringVar()
         self.create_widgets()
 
     def create_widgets(self):
@@ -102,13 +103,34 @@ class ViewBooksWindow:
             self.tree.heading(col, text=col)
         self.tree.pack(fill='both', expand=True)
 
+        # 添加下拉菜单选择视图
+        self.view_selector = ttk.Combobox(self.frame, textvariable=self.selected_view)
+        self.view_selector['values'] = ('view_all_books', 'view_books_by_category', 'view_books_by_author')
+        self.view_selector.current(0)
+        self.view_selector.bind('<<ComboboxSelected>>', self.load_books)
+        self.view_selector.pack(pady=10)
+
         self.load_books()
 
         self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.book_management), width=15)
         self.back_btn.pack(pady=10, ipady=5)
 
-    def load_books(self):
-        books = backend.get_all_books()
+    def load_books(self, event=None):
+        view = self.selected_view.get()
+        if view == 'view_all_books':
+            books = backend.get_all_books()
+        elif view == 'view_books_by_category':
+            books = backend.get_books_by_category()
+        elif view == 'view_books_by_author':
+            books = backend.get_books_by_author()
+        else:
+            books = []
+
+        # 清空当前树视图内容
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+
+        # 插入新数据
         for row in books:
             self.tree.insert('', 'end', values=(
                 row['BookID'], row['Title'], row['Author'], row['Publisher'],

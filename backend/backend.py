@@ -16,25 +16,37 @@ def validate_user(AdminID, password):
                 cursor.execute(sql, (AdminID, password))
                 result = cursor.fetchone()
                 if result:
-                    return "superadmin"
+                    return True
                 
-                # 检查 admin 账号
-                sql = "SELECT * FROM adminaccount WHERE AdminID = %s AND password = %s"
-                cursor.execute(sql, (AdminID, password))
-                result = cursor.fetchone()
-                if result:
-                    return "admin"
-                
-                return None
+                return False
         except Exception as e:
             messagebox.showerror("Error", str(e))
-            return None
+            return False
         finally:
             connection.close()
     else:
-        return None
+        return False
 
-
+def validate_student(StudentID, password):
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 检查学生账号
+                sql = "SELECT * FROM studentaccount WHERE StudentID = %s AND password = %s"
+                cursor.execute(sql, (StudentID, password))
+                result = cursor.fetchone()
+                if result:
+                    return True
+                
+                return False
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return False
+        finally:
+            connection.close()
+    else:
+        return False
 
 
 

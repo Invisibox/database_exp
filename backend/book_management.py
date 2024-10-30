@@ -26,7 +26,37 @@ def get_all_books():
     if connection:
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT * FROM bookinfo"
+                sql = "SELECT * FROM view_all_books"
+                cursor.execute(sql)
+                results = cursor.fetchall()
+                return results
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return []
+        finally:
+            connection.close()
+
+def get_books_by_category():
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM view_books_by_category"
+                cursor.execute(sql)
+                results = cursor.fetchall()
+                return results
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return []
+        finally:
+            connection.close()
+
+def get_books_by_author():
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM view_books_by_author"
                 cursor.execute(sql)
                 results = cursor.fetchall()
                 return results
