@@ -149,6 +149,11 @@ class LibraryManagementApp:
         self.delete_book = DeleteBookWindow(self.main_frame, self)
         self.delete_book.show()
 
+    def show_borrowing_info(self):
+        self.book_management.hide()
+        self.borrowing_info = BorrowingInfoWindow(self.main_frame, self)
+        self.borrowing_info.show()
+
     ## 员工管理界面
     def show_employee_management(self):
         self.main_menu.hide()
@@ -219,8 +224,23 @@ class LibraryManagementApp:
 
     def stu_search_book(self):
         self.stu_menu.hide()
-        self.search_book = SearchBooksWindow(self.main_frame, self)
+        self.search_book = StuSearchBooksWindow(self.main_frame, self)
         self.search_book.show()
+
+    def stu_borrow_book(self):
+        self.stu_menu.hide()
+        self.borrow_book = BorrowBookWindow(self.main_frame, self)
+        self.borrow_book.show()
+
+    def stu_return_book(self):
+        self.stu_menu.hide()
+        self.return_book = ReturnBookWindow(self.main_frame, self)
+        self.return_book.show()
+
+    def edit_student_info(self):
+        self.stu_menu.hide()
+        self.edit_student_info = UpdateStudentInfoWindow(self.main_frame, self)
+        self.edit_student_info.show()
 
     def go_back(self, current_window, previous_window):
         current_window.hide()
@@ -264,14 +284,14 @@ class StudentMenu:
         self.search_btn = ttk.Button(self.frame, text="查找书籍", command=self.app.stu_search_book, width=30)
         self.search_btn.pack(pady=10, ipady=5)
 
-#        self.borrow_btn = ttk.Button(self.frame, text="借阅书籍", command=self.app.show_borrow_book, width=30)
-#        self.borrow_btn.pack(pady=10, ipady=5)
-#
-#        self.return_btn = ttk.Button(self.frame, text="归还书籍", command=self.app.show_return_book, width=30)
-#        self.return_btn.pack(pady=10, ipady=5)
-#
-#        self.info_btn = ttk.Button(self.frame, text="个人信息", command=self.app.show_student_info, width=30)
-#        self.info_btn.pack(pady=10, ipady=5)
+        self.borrow_btn = ttk.Button(self.frame, text="借阅书籍", command=self.app.stu_borrow_book, width=30)
+        self.borrow_btn.pack(pady=10, ipady=5)
+
+        self.return_btn = ttk.Button(self.frame, text="归还书籍", command=self.app.stu_return_book, width=30)
+        self.return_btn.pack(pady=10, ipady=5)
+
+        self.info_btn = ttk.Button(self.frame, text="修改个人信息", command=self.app.edit_student_info, width=30)
+        self.info_btn.pack(pady=10, ipady=5)
 
     def show(self):
         self.frame.pack(fill='both', expand=True)

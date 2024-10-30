@@ -1,6 +1,7 @@
 import pymysql
 from tkinter import messagebox
 from .db_connection import connect_db
+from .valid import validate_student
 
 # 书籍操作
 def add_book(book_data):
@@ -167,3 +168,72 @@ def list_books_by_category():
             return {}
         finally:
             connection.close()
+
+def borrow_book(student_id, password, book_id):
+    if not validate_student(student_id, password):
+        messagebox.showerror("Error", "学生身份验证失败")
+        return False
+
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 检查书籍库存
+                cursor.execute("SELECT Stock FROM bookinfo WHERE BookID = %s", (book_id,))
+                book = cursor.fetchone()
+                if not book or book['Stock'] <= 0:
+                    messagebox.showerror("Error", "书籍库存不足")
+                    return False
+
+                # 插入借书记录
+                sql = """
+                    INSERT INTO borrowinginfo (StudentID, BookID, BorrowDate)
+                    VALUES (%s, %s, CURDATE())
+                """
+                cursor.execute(sql, (student_id, book_id))
+
+                # 更新书籍库存
+                cursor.execute("UPDATE bookinfo SET Stock = Stock - 1 WHERE BookID = %s", (book_id,))
+            connection.commit()
+            return True
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return False
+        finally:
+            connection.close()
+    else:
+        return False
+
+def return_book(student_id, password, book_id):
+    if not validate_student(student_id, password):
+        messagebox.showerror("Error", "学生身份验证失败")
+        return False
+
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 更新还书记录
+                sql = """
+                    UPDATE borrowinginfo
+                    SET ReturnDate = CURDATE()
+                    WHERE StudentID = %s AND BookID = %s AND ReturnDate IS NULL
+                """
+                cursor.execute(sql, (student_id, book_id))
+
+                # 检查是否有更新
+                if cursor.rowcount == 0:
+                    messagebox.showerror("Error", "没有找到未归还的借书记录")
+                    return False
+
+                # 更新书籍库存
+                cursor.execute("UPDATE bookinfo SET Stock = Stock + 1 WHERE BookID = %s", (book_id,))
+            connection.commit()
+            return True
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return False
+        finally:
+            connection.close()
+    else:
+        return False

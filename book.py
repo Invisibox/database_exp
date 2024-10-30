@@ -32,6 +32,9 @@ class BookManagementWindow:
         self.view_management_btn = ttk.Button(self.frame, text="视图管理", command=self.app.show_manage_book, width=30)
         self.view_management_btn.pack(pady=5, ipady=5)
 
+        self.borrowing_info_btn = ttk.Button(self.frame, text="借书信息", command=self.app.show_borrowing_info, width=30)
+        self.borrowing_info_btn.pack(pady=5, ipady=5)
+
         self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.main_menu), width=30)
         self.back_btn.pack(pady=5, ipady=5)
 
@@ -40,6 +43,7 @@ class BookManagementWindow:
 
     def hide(self):
         self.frame.pack_forget()
+
 
 class AddBookWindow:
     def __init__(self, master, app):
@@ -359,6 +363,41 @@ class ViewManagementWindow:
             messagebox.showinfo("成功", "索引创建成功。")
         else:
             messagebox.showerror("错误", "索引创建失败。")
+
+    def show(self):
+        self.frame.pack(fill='both', expand=True)
+
+    def hide(self):
+        self.frame.pack_forget()
+
+class BorrowingInfoWindow:
+    def __init__(self, master, app):
+        self.master = master
+        self.app = app
+        self.frame = ttk.Frame(self.master)
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label = ttk.Label(self.frame, text="借书信息")
+        self.label.pack(pady=10)
+
+        columns = ('学生姓名', '学生ID', '书籍ID', '书籍名称', '借书时间', '还书时间')
+        self.tree = ttk.Treeview(self.frame, columns=columns, show='headings')
+        for col in columns:
+            self.tree.heading(col, text=col)
+        self.tree.pack(fill='both', expand=True)
+
+        self.load_borrowing_info()
+
+        self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.book_management), width=30)
+        self.back_btn.pack(pady=10, ipady=5)
+
+    def load_borrowing_info(self):
+        borrowing_info = backend.get_borrowing_info()
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        for info in borrowing_info:
+            self.tree.insert('', 'end', values=(info['StudentName'], info['StudentID'], info['BookID'], info['BookTitle'], info['BorrowDate'], info['ReturnDate']))
 
     def show(self):
         self.frame.pack(fill='both', expand=True)

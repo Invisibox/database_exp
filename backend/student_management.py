@@ -153,3 +153,73 @@ def update_student_account(student_id, account_data):
             return False
         finally:
             connection.close()
+
+def student_update_own_info(student_id, password, new_student_data, new_account_data):
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 验证学生ID和密码
+                verify_sql = "SELECT * FROM studentaccount WHERE StudentID = %s AND Password = %s"
+                cursor.execute(verify_sql, (student_id, password))
+                account = cursor.fetchone()
+                
+                if account:
+                    # 更新学生信息
+                    update_student_info_sql = "UPDATE StudentInfo SET "
+                    update_student_info_params = []
+                    if new_student_data[0] is not None:
+                        update_student_info_sql += "Name=%s, "
+                        update_student_info_params.append(new_student_data[0])
+                    if new_student_data[1] is not None:
+                        update_student_info_sql += "Gender=%s, "
+                        update_student_info_params.append(new_student_data[1])
+                    if new_student_data[2] is not None:
+                        update_student_info_sql += "PhoneNumber=%s, "
+                        update_student_info_params.append(new_student_data[2])
+                    if new_student_data[3] is not None:
+                        update_student_info_sql += "IDCardNumber=%s, "
+                        update_student_info_params.append(new_student_data[3])
+                    if new_student_data[4] is not None:
+                        update_student_info_sql += "CampusCode=%s, "
+                        update_student_info_params.append(new_student_data[4])
+                    if new_student_data[5] is not None:
+                        update_student_info_sql += "DateOfBirth=%s, "
+                        update_student_info_params.append(new_student_data[5])
+                    
+                    # 移除最后一个逗号和空格
+                    update_student_info_sql = update_student_info_sql.rstrip(', ')
+                    update_student_info_sql += " WHERE StudentID=%s"
+                    update_student_info_params.append(student_id)
+                    
+                    if update_student_info_params:
+                        cursor.execute(update_student_info_sql, update_student_info_params)
+                    
+                    # 更新学生账户信息
+                    update_student_account_sql = "UPDATE studentaccount SET "
+                    update_student_account_params = []
+                    if new_account_data[0] is not None:
+                        update_student_account_sql += "Password=%s, "
+                        update_student_account_params.append(new_account_data[0])
+                    if new_account_data[1] is not None:
+                        update_student_account_sql += "Email=%s, "
+                        update_student_account_params.append(new_account_data[1])
+                    
+                    # 移除最后一个逗号和空格
+                    update_student_account_sql = update_student_account_sql.rstrip(', ')
+                    update_student_account_sql += " WHERE StudentID=%s"
+                    update_student_account_params.append(student_id)
+                    
+                    if update_student_account_params:
+                        cursor.execute(update_student_account_sql, update_student_account_params)
+                    
+                    connection.commit()
+                    return True
+                else:
+                    messagebox.showerror("Error", "Invalid student ID or password")
+                    return False
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return False
+        finally:
+            connection.close()
