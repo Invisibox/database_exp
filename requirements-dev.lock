@@ -18,3 +18,5 @@ pycparser==2.22
     # via cffi
 pymysql==1.1.1
     # via database-exp
+sv-ttk==2.6.0
+    # via database-exp

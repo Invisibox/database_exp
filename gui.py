@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+import tkinter.font as tkfont
+import ctypes
+import sv_ttk
 import backend  # Import backend functions
 
 class LibraryManagementApp:
@@ -11,7 +14,7 @@ class LibraryManagementApp:
 
     def create_widgets(self):
         # Create buttons for different management sections
-        self.student_btn = tk.Button(self.master, text="Student Management", command=self.open_student_management, width=30)
+        self.student_btn = ttk.Button(self.master, text="Student Management", command=self.open_student_management, width=80)
         self.student_btn.pack(pady=10)
 
         # You can add buttons for other management sections here
@@ -27,19 +30,19 @@ class StudentManagementWindow:
 
     def create_widgets(self):
         # Create widgets for student management
-        self.label = tk.Label(self.master, text="Student Management", font=('Arial', 16))
+        self.label = ttk.Label(self.master, text="Student Management")
         self.label.pack(pady=10)
 
-        self.add_student_btn = tk.Button(self.master, text="Add Student", command=self.add_student, width=20)
+        self.add_student_btn = ttk.Button(self.master, text="添加学生", command=self.add_student, width=50)
         self.add_student_btn.pack(pady=5)
 
-        self.view_students_btn = tk.Button(self.master, text="View Students", command=self.view_students, width=20)
+        self.view_students_btn = ttk.Button(self.master, text="View Students", command=self.view_students, width=50)
         self.view_students_btn.pack(pady=5)
 
-        self.update_student_btn = tk.Button(self.master, text="Update Student", command=self.update_student, width=20)
+        self.update_student_btn = ttk.Button(self.master, text="Update Student", command=self.update_student, width=50)
         self.update_student_btn.pack(pady=5)
 
-        self.delete_student_btn = tk.Button(self.master, text="Delete Student", command=self.delete_student, width=20)
+        self.delete_student_btn = ttk.Button(self.master, text="Delete Student", command=self.delete_student, width=50)
         self.delete_student_btn.pack(pady=5)
 
     def add_student(self):
@@ -57,7 +60,7 @@ class StudentManagementWindow:
 class AddStudentWindow:
     def __init__(self, master):
         self.master = tk.Toplevel(master)
-        self.master.title("Add Student")
+        self.master.title("添加学生")
         self.create_widgets()
 
     def create_widgets(self):
@@ -66,21 +69,21 @@ class AddStudentWindow:
         self.entries = {}
 
         for idx, text in enumerate(labels):
-            label = tk.Label(self.master, text=text)
+            label = ttk.Label(self.master, text=text)
             label.grid(row=idx, column=0, padx=5, pady=5, sticky='e')
 
             if text == 'Gender:':
                 self.gender_var = tk.StringVar(value="Male")
-                gender_male = tk.Radiobutton(self.master, text="Male", variable=self.gender_var, value="Male")
-                gender_female = tk.Radiobutton(self.master, text="Female", variable=self.gender_var, value="Female")
+                gender_male = ttk.Radiobutton (self.master, text="Male", variable=self.gender_var, value="Male")
+                gender_female = ttk.Radiobutton (self.master, text="Female", variable=self.gender_var, value="Female")
                 gender_male.grid(row=idx, column=1, padx=5, pady=5, sticky='w')
                 gender_female.grid(row=idx, column=1, padx=70, pady=5)
             else:
-                entry = tk.Entry(self.master)
+                entry = ttk.Entry (self.master)
                 entry.grid(row=idx, column=1, padx=5, pady=5)
                 self.entries[text] = entry
 
-        self.add_btn = tk.Button(self.master, text="Add Student", command=self.add_student_to_db, width=15)
+        self.add_btn = ttk.Button(self.master, text="Add Student", command=self.add_student_to_db, width=15)
         self.add_btn.grid(row=len(labels), column=0, columnspan=2, pady=10)
 
     def add_student_to_db(self):
@@ -130,12 +133,12 @@ class UpdateStudentWindow:
         self.create_widgets()
 
     def create_widgets(self):
-        self.student_id_label = tk.Label(self.master, text="Enter Student ID to Update:")
+        self.student_id_label = ttk.Label(self.master, text="Enter Student ID to Update:")
         self.student_id_label.pack(pady=5)
-        self.student_id_entry = tk.Entry(self.master)
+        self.student_id_entry = ttk.Entry (self.master)
         self.student_id_entry.pack(pady=5)
 
-        self.fetch_btn = tk.Button(self.master, text="Fetch Data", command=self.fetch_student_data)
+        self.fetch_btn = ttk.Button(self.master, text="Fetch Data", command=self.fetch_student_data)
         self.fetch_btn.pack(pady=5)
 
     def fetch_student_data(self):
@@ -154,17 +157,17 @@ class UpdateStudentWindow:
         self.entries = {}
 
         for idx, text in enumerate(labels):
-            label = tk.Label(self.update_window, text=text)
+            label = ttk.Label(self.update_window, text=text)
             label.grid(row=idx, column=0, padx=5, pady=5, sticky='e')
 
             if text == 'Gender:':
                 self.gender_var = tk.StringVar(value=student_data['Gender'])
-                gender_male = tk.Radiobutton(self.update_window, text="Male", variable=self.gender_var, value="Male")
-                gender_female = tk.Radiobutton(self.update_window, text="Female", variable=self.gender_var, value="Female")
+                gender_male = ttk.Radiobutton (self.update_window, text="Male", variable=self.gender_var, value="Male")
+                gender_female = ttk.Radiobutton (self.update_window, text="Female", variable=self.gender_var, value="Female")
                 gender_male.grid(row=idx, column=1, padx=5, pady=5, sticky='w')
-                gender_female.grid(row=idx, column=1, padx=70, pady=5)
+                gender_female.grid(row=idx, column=1, padx=80, pady=10)
             else:
-                entry = tk.Entry(self.update_window)
+                entry = ttk.Entry (self.update_window)
                 entry.grid(row=idx, column=1, padx=5, pady=5)
                 self.entries[text] = entry
 
@@ -180,7 +183,7 @@ class UpdateStudentWindow:
                 elif text == 'Date of Birth (YYYY-MM-DD):':
                     entry.insert(0, student_data['DateOfBirth'])
 
-        self.update_btn = tk.Button(self.update_window, text="Update Student",
+        self.update_btn = ttk.Button(self.update_window, text="Update Student",
                                     command=lambda: self.update_student_in_db(student_data['StudentID']), width=15)
         self.update_btn.grid(row=len(labels), column=0, columnspan=2, pady=10)
 
@@ -207,12 +210,12 @@ class DeleteStudentWindow:
         self.create_widgets()
 
     def create_widgets(self):
-        self.student_id_label = tk.Label(self.master, text="Enter Student ID to Delete:")
+        self.student_id_label = ttk.Label(self.master, text="Enter Student ID to Delete:")
         self.student_id_label.pack(pady=5)
-        self.student_id_entry = tk.Entry(self.master)
+        self.student_id_entry = ttk.Entry (self.master)
         self.student_id_entry.pack(pady=5)
 
-        self.delete_btn = tk.Button(self.master, text="Delete Student", command=self.delete_student_from_db)
+        self.delete_btn = ttk.Button(self.master, text="Delete Student", command=self.delete_student_from_db)
         self.delete_btn.pack(pady=5)
 
     def delete_student_from_db(self):
@@ -226,5 +229,14 @@ class DeleteStudentWindow:
 
 if __name__ == '__main__':
     root = tk.Tk()
+    sv_ttk.set_theme("light")
+    style = ttk.Style()
+    style.configure('TButton' , font=('Microsoft YaHei', 10))
+    style.configure('TRadiobutton', font=('Microsoft YaHei', 9))
+    default_font = tkfont.nametofont("TkDefaultFont")
+    ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    ScaleFactor=ctypes.windll.shcore.GetScaleFactorForDevice(0)
+    root.tk.call('tk', 'scaling', ScaleFactor/75)
+    root.option_add("*Font", default_font)
     app = LibraryManagementApp(root)
     root.mainloop()
