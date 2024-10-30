@@ -9,6 +9,7 @@ from student import *
 from book import *
 from employee import *
 from superadmin import *
+from stu_function import *
 
 class LoginWindow:
     def __init__(self, master, app):
@@ -19,7 +20,13 @@ class LoginWindow:
         self.create_widgets()
 
     def create_widgets(self):
-        self.AdminID_label = ttk.Label(self.frame, text="管理员ID:")
+        self.role_label = ttk.Label(self.frame, text="选择身份:")
+        self.role_label.pack(pady=5)
+        self.role_combobox = ttk.Combobox(self.frame, values=["管理员", "学生"])
+        self.role_combobox.pack(pady=5)
+        self.role_combobox.current(0)  # 默认选择管理员
+
+        self.AdminID_label = ttk.Label(self.frame, text="用户ID:")
         self.AdminID_label.pack(pady=5)
         self.AdminID_entry = ttk.Entry(self.frame)
         self.AdminID_entry.pack(pady=5)
@@ -33,14 +40,22 @@ class LoginWindow:
         self.login_btn.pack(pady=10, ipady=5)  # 增加按钮高度
 
     def login(self):
+        role = self.role_combobox.get()
         AdminID = self.AdminID_entry.get()
         password = self.password_entry.get()
-        user_role = backend.validate_user(AdminID, password)
-        if user_role in ["superadmin", "admin"]:
-            self.app.user_role = user_role
-            self.app.show_main_menu()
-        else:
-            messagebox.showerror("错误", "用户名或密码错误")
+
+        if role == "管理员":
+            if backend.validate_user(AdminID, password):
+                self.app.user_role = "superadmin"
+                self.app.show_main_menu()
+            else:
+                messagebox.showerror("错误", "用户名或密码错误")
+        elif role == "学生":
+            if backend.validate_student(AdminID, password):
+                self.app.user_role = "student"
+                self.app.show_stu_menu()
+            else:
+                messagebox.showerror("错误", "用户名或密码错误")
 
     def show(self):
         self.frame.pack(fill='both', expand=True)
@@ -61,11 +76,13 @@ class LibraryManagementApp:
         self.login_window = LoginWindow(self.main_frame, self)
         self.login_window.show()
 
+    # 管理员主菜单
     def show_main_menu(self):
         self.login_window.hide()
         self.main_menu = MainMenu(self.main_frame, self)
         self.main_menu.show()
 
+    ## 学生管理界面
     def show_student_management(self):
         self.main_menu.hide()
         self.student_management = StudentManagementWindow(self.main_frame, self)
@@ -96,6 +113,7 @@ class LibraryManagementApp:
         self.update_student_account = UpdateStudentAccountWindow(self.main_frame, self)
         self.update_student_account.show()
 
+    ## 书籍管理界面
     def show_book_management(self):
         self.main_menu.hide()
         self.book_management = BookManagementWindow(self.main_frame, self)
@@ -118,8 +136,8 @@ class LibraryManagementApp:
     
     def show_search_book(self):
         self.book_management.hide()
-        self.serch_book = SearchBooksWindow(self.main_frame, self)
-        self.serch_book.show()
+        self.search_book = SearchBooksWindow(self.main_frame, self)
+        self.search_book.show()
 
     def show_manage_book(self):
         self.book_management.hide()
@@ -131,6 +149,7 @@ class LibraryManagementApp:
         self.delete_book = DeleteBookWindow(self.main_frame, self)
         self.delete_book.show()
 
+    ## 员工管理界面
     def show_employee_management(self):
         self.main_menu.hide()
         self.employee_management = EmployeeManagementWindow(self.main_frame, self)
@@ -161,6 +180,7 @@ class LibraryManagementApp:
         self.update_employee_account = UpdateEmployeeAccountWindow(self.main_frame, self)
         self.update_employee_account.show()
 
+    ## 超级管理员管理界面
     def show_superadmin_management(self):
         self.main_menu.hide()
         self.superadmin_management = SuperAdminManagementWindow(self.main_frame, self)
@@ -191,6 +211,17 @@ class LibraryManagementApp:
         self.update_superadmin_account = UpdateSuperAdminAccountWindow(self.main_frame, self)
         self.update_superadmin_account.show()
 
+    # 显示学生主菜单
+    def show_stu_menu(self):
+        self.login_window.hide()
+        self.stu_menu = StudentMenu(self.main_frame, self)
+        self.stu_menu.show()
+
+    def stu_search_book(self):
+        self.stu_menu.hide()
+        self.search_book = SearchBooksWindow(self.main_frame, self)
+        self.search_book.show()
+
     def go_back(self, current_window, previous_window):
         current_window.hide()
         previous_window.show()
@@ -215,6 +246,32 @@ class MainMenu:
         self.superadmin_btn = ttk.Button(self.frame, text="超级管理员管理", command=self.app.show_superadmin_management, width=30)
         self.superadmin_btn.pack(pady=10, ipady=5)
         # 你可以在这里添加其他管理部分的按钮
+
+    def show(self):
+        self.frame.pack(fill='both', expand=True)
+
+    def hide(self):
+        self.frame.pack_forget()
+
+class StudentMenu:
+    def __init__(self, master, app):
+        self.master = master
+        self.app = app
+        self.frame = ttk.Frame(self.master)
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.search_btn = ttk.Button(self.frame, text="查找书籍", command=self.app.stu_search_book, width=30)
+        self.search_btn.pack(pady=10, ipady=5)
+
+#        self.borrow_btn = ttk.Button(self.frame, text="借阅书籍", command=self.app.show_borrow_book, width=30)
+#        self.borrow_btn.pack(pady=10, ipady=5)
+#
+#        self.return_btn = ttk.Button(self.frame, text="归还书籍", command=self.app.show_return_book, width=30)
+#        self.return_btn.pack(pady=10, ipady=5)
+#
+#        self.info_btn = ttk.Button(self.frame, text="个人信息", command=self.app.show_student_info, width=30)
+#        self.info_btn.pack(pady=10, ipady=5)
 
     def show(self):
         self.frame.pack(fill='both', expand=True)
