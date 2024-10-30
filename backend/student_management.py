@@ -1,3 +1,4 @@
+import pymysql
 from tkinter import messagebox
 from .db_connection import connect_db
 
@@ -6,15 +7,30 @@ def add_student(student_data):
     connection = connect_db()
     if connection:
         try:
+            # 检查 student_data 中的所有字段是否为空
+            for field in student_data:
+                if not field:
+                    messagebox.showerror("Error", "所有信息都不能为空")
+                    return False
+            
+            student_id = student_data[0]
+            
             with connection.cursor() as cursor:
+                # 插入学生信息
                 sql = """
                     INSERT INTO StudentInfo (StudentID, Name, Gender, PhoneNumber, IDCardNumber, CampusCode, DateOfBirth)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """
-                cursor.execute(sql, student_data)
-                
+                try:
+                    cursor.execute(sql, student_data)
+                except pymysql.err.IntegrityError as e:
+                    if e.args[0] == 1062:  # MySQL error code for duplicate entry
+                        messagebox.showerror("Error", "学生ID已存在")
+                        return False
+                    else:
+                        raise
+
                 # 在 studentaccount 表中添加对应记录
-                student_id = student_data[0]
                 account_sql = """
                     INSERT INTO studentaccount (StudentID, Password, SecurityQuestion, SecurityAnswer, RemainingAttempts)
                     VALUES (%s, %s, %s, %s, %s)
