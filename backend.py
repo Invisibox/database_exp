@@ -22,7 +22,35 @@ def connect_db():
         messagebox.showerror("Database Connection Error", str(e))
         return None
 
-# Student operations
+def validate_user(AdminID, password):
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 检查 superadmin 账号
+                sql = "SELECT * FROM superadminaccount WHERE AdminID = %s AND password = %s"
+                cursor.execute(sql, (AdminID, password))
+                result = cursor.fetchone()
+                if result:
+                    return "superadmin"
+                
+                # 检查 admin 账号
+                sql = "SELECT * FROM adminaccount WHERE AdminID = %s AND password = %s"
+                cursor.execute(sql, (AdminID, password))
+                result = cursor.fetchone()
+                if result:
+                    return "admin"
+                
+                return None
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return None
+        finally:
+            connection.close()
+    else:
+        return None
+
+# 学生操作
 def add_student(student_data):
     connection = connect_db()
     if connection:
