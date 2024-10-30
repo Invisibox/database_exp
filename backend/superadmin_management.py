@@ -1,4 +1,3 @@
-import pymysql
 from tkinter import messagebox
 from .db_connection import connect_db
 

@@ -1,4 +1,3 @@
-import tkinter as tk
 from tkinter import ttk, messagebox
 import backend.backend as backend  # 导入后端函数
 
