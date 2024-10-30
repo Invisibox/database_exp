@@ -8,6 +8,7 @@ import backend.backend as backend  # 导入后端函数
 from student import *
 from book import *
 from employee import *
+from superadmin import *
 
 class LoginWindow:
     def __init__(self, master, app):
@@ -150,6 +151,36 @@ class LibraryManagementApp:
         self.update_employee_account = UpdateEmployeeAccountWindow(self.main_frame, self)
         self.update_employee_account.show()
 
+    def show_superadmin_management(self):
+        self.main_menu.hide()
+        self.superadmin_management = SuperAdminManagementWindow(self.main_frame, self)
+        self.superadmin_management.show()
+
+    def show_add_superadmin(self):
+        self.superadmin_management.hide()
+        self.add_superadmin = AddSuperAdminWindow(self.main_frame, self)
+        self.add_superadmin.show()
+
+    def show_view_superadmins(self):
+        self.superadmin_management.hide()
+        self.view_superadmins = ViewSuperAdminsWindow(self.main_frame, self)
+        self.view_superadmins.show()
+
+    def show_update_superadmin(self):
+        self.superadmin_management.hide()
+        self.update_superadmin = UpdateSuperAdminWindow(self.main_frame, self)
+        self.update_superadmin.show()
+
+    def show_delete_superadmin(self):
+        self.superadmin_management.hide()
+        self.delete_superadmin = DeleteSuperAdminWindow(self.main_frame, self)
+        self.delete_superadmin.show()
+
+    def show_update_superadmin_account(self):
+        self.superadmin_management.hide()
+        self.update_superadmin_account = UpdateSuperAdminAccountWindow(self.main_frame, self)
+        self.update_superadmin_account.show()
+
     def go_back(self, current_window, previous_window):
         current_window.hide()
         previous_window.show()
@@ -170,6 +201,9 @@ class MainMenu:
 
         self.employee_btn = ttk.Button(self.frame, text="员工管理", command=self.app.show_employee_management, width=30)
         self.employee_btn.pack(pady=10, ipady=5)
+
+        self.superadmin_btn = ttk.Button(self.frame, text="超级管理员管理", command=self.app.show_superadmin_management, width=30)
+        self.superadmin_btn.pack(pady=10, ipady=5)
         # 你可以在这里添加其他管理部分的按钮
 
     def show(self):
