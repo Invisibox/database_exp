@@ -1,54 +1,6 @@
 import pymysql
 from tkinter import messagebox
-
-# Database connection parameters
-db_host = 'localhost'
-db_user = 'root'
-db_password = '123456'  # Replace with your MySQL root password
-db_name = 'lib'
-
-def connect_db():
-    try:
-        connection = pymysql.connect(
-            host=db_host,
-            user=db_user,
-            password=db_password,
-            database=db_name,
-            charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor
-        )
-        return connection
-    except Exception as e:
-        messagebox.showerror("Database Connection Error", str(e))
-        return None
-
-def validate_user(AdminID, password):
-    connection = connect_db()
-    if connection:
-        try:
-            with connection.cursor() as cursor:
-                # 检查 superadmin 账号
-                sql = "SELECT * FROM superadminaccount WHERE AdminID = %s AND password = %s"
-                cursor.execute(sql, (AdminID, password))
-                result = cursor.fetchone()
-                if result:
-                    return "superadmin"
-                
-                # 检查 admin 账号
-                sql = "SELECT * FROM adminaccount WHERE AdminID = %s AND password = %s"
-                cursor.execute(sql, (AdminID, password))
-                result = cursor.fetchone()
-                if result:
-                    return "admin"
-                
-                return None
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
-            return None
-        finally:
-            connection.close()
-    else:
-        return None
+from .db_connection import connect_db
 
 # 学生操作
 def add_student(student_data):
@@ -132,5 +84,3 @@ def delete_student(student_id):
             return False
         finally:
             connection.close()
-
-# Similarly, you can add backend functions for Books, Borrowing, Employees, and Admins.
