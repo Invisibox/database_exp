@@ -84,3 +84,108 @@ def delete_book(book_id):
             return False
         finally:
             connection.close()
+
+def search_books(book_id=None, title=None, author=None, category=None):
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM bookinfo WHERE 1=1"
+                params = []
+
+                if book_id:
+                    sql += " AND BookID = %s"
+                    params.append(book_id)
+                if title:
+                    sql += " AND Title LIKE %s"
+                    params.append(f"%{title}%")
+                if author:
+                    sql += " AND Author LIKE %s"
+                    params.append(f"%{author}%")
+                if category:
+                    sql += " AND Category LIKE %s"
+                    params.append(f"%{category}%")
+
+                cursor.execute(sql, params)
+                results = cursor.fetchall()
+                return results
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return []
+        finally:
+            connection.close()
+
+def count_books_by_category():
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                sql = """
+                    SELECT Category, COUNT(*) as count
+                    FROM bookinfo
+                    GROUP BY Category
+                """
+                cursor.execute(sql)
+                results = cursor.fetchall()
+                return results
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return []
+        finally:
+            connection.close()
+
+# 创建视图
+def create_views():
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 视图1：显示所有书籍的详细信息
+                sql1 = """
+                    CREATE OR REPLACE VIEW view_all_books AS
+                    SELECT * FROM bookinfo
+                """
+                cursor.execute(sql1)
+
+                # 视图2：显示每个类别的书籍数量
+                sql2 = """
+                    CREATE OR REPLACE VIEW view_books_count_by_category AS
+                    SELECT Category, COUNT(*) as count
+                    FROM bookinfo
+                    GROUP BY Category
+                """
+                cursor.execute(sql2)
+
+            connection.commit()
+            return True
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return False
+        finally:
+            connection.close()
+
+# 为常用属性建立索引
+def create_indexes():
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 在 Title 字段上建立索引
+                sql1 = "CREATE INDEX idx_title ON bookinfo (Title)"
+                cursor.execute(sql1)
+
+                # 在 Author 字段上建立索引
+                sql2 = "CREATE INDEX idx_author ON bookinfo (Author)"
+                cursor.execute(sql2)
+
+                # 在 Category 字段上建立索引
+                sql3 = "CREATE INDEX idx_category ON bookinfo (Category)"
+                cursor.execute(sql3)
+
+            connection.commit()
+            return True
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return False
+        finally:
+            connection.close()

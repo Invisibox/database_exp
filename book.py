@@ -17,7 +17,7 @@ class BookManagementWindow:
         self.add_book_btn = ttk.Button(self.frame, text="添加书籍", command=self.app.show_add_book, width=30)
         self.add_book_btn.pack(pady=5, ipady=5)
 
-        self.view_books_btn = ttk.Button(self.frame, text="查看书籍", command=self.app.show_view_books, width=30)
+        self.view_books_btn = ttk.Button(self.frame, text="查看书籍", command=self.app.show_view_book, width=30)
         self.view_books_btn.pack(pady=5, ipady=5)
 
         self.update_book_btn = ttk.Button(self.frame, text="更新书籍", command=self.app.show_update_book, width=30)
@@ -25,6 +25,12 @@ class BookManagementWindow:
 
         self.delete_book_btn = ttk.Button(self.frame, text="删除书籍", command=self.app.show_delete_book, width=30)
         self.delete_book_btn.pack(pady=5, ipady=5)
+
+        self.search_books_btn = ttk.Button(self.frame, text="搜索书籍", command=self.app.show_search_book, width=30)
+        self.search_books_btn.pack(pady=5, ipady=5)
+
+        self.view_management_btn = ttk.Button(self.frame, text="视图管理", command=self.app.show_view_book, width=30)
+        self.view_management_btn.pack(pady=5, ipady=5)
 
         self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.main_menu), width=30)
         self.back_btn.pack(pady=5, ipady=5)
@@ -225,6 +231,112 @@ class DeleteBookWindow:
             self.app.go_back(self, self.app.book_management)
         else:
             messagebox.showerror("错误", "未找到书籍或无法删除。")
+
+    def show(self):
+        self.frame.pack(fill='both', expand=True)
+
+    def hide(self):
+        self.frame.pack_forget()
+
+class SearchBooksWindow:
+    def __init__(self, master, app):
+        self.master = master
+        self.app = app
+        self.frame = ttk.Frame(self.master)
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label = ttk.Label(self.frame, text="搜索书籍")
+        self.label.pack(pady=10)
+
+        self.id_label = ttk.Label(self.frame, text="书籍ID:")
+        self.id_label.pack(pady=5)
+        self.id_entry = ttk.Entry(self.frame)
+        self.id_entry.pack(pady=5)
+
+        self.title_label = ttk.Label(self.frame, text="书名:")
+        self.title_label.pack(pady=5)
+        self.title_entry = ttk.Entry(self.frame)
+        self.title_entry.pack(pady=5)
+
+        self.author_label = ttk.Label(self.frame, text="作者:")
+        self.author_label.pack(pady=5)
+        self.author_entry = ttk.Entry(self.frame)
+        self.author_entry.pack(pady=5)
+
+        self.category_label = ttk.Label(self.frame, text="类别:")
+        self.category_label.pack(pady=5)
+        self.category_entry = ttk.Entry(self.frame)
+        self.category_entry.pack(pady=5)
+
+        self.search_btn = ttk.Button(self.frame, text="搜索", command=self.search_books)
+        self.search_btn.pack(pady=10, ipady=5)
+
+        self.tree = ttk.Treeview(self.frame, columns=('书籍ID', '标题', '作者', '出版社', '译者', '类别', '到达时间', '库存'), show='headings')
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+        self.tree.pack(fill='both', expand=True)
+
+        self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.book_management), width=15)
+        self.back_btn.pack(pady=10, ipady=5)
+
+    def search_books(self):
+        book_id = self.id_entry.get()
+        title = self.title_entry.get()
+        author = self.author_entry.get()
+        category = self.category_entry.get()
+
+        # 将空字符串转换为 None
+        book_id = book_id if book_id else None
+        title = title if title else None
+        author = author if author else None
+        category = category if category else None
+
+        books = backend.search_books(book_id=book_id, title=title, author=author, category=category)
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        for book in books:
+            self.tree.insert('', 'end', values=(book['BookID'], book['Title'], book['Author'], book['Publisher'], book['Translator'], book['Category'], book['ArrivalTime'], book['Stock']))
+
+    def show(self):
+        self.frame.pack(fill='both', expand=True)
+
+    def hide(self):
+        self.frame.pack_forget()
+
+class ViewManagementWindow:
+    def __init__(self, master, app):
+        self.master = master
+        self.app = app
+        self.frame = ttk.Frame(self.master)
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label = ttk.Label(self.frame, text="视图管理")
+        self.label.pack(pady=10)
+
+        self.create_views_btn = ttk.Button(self.frame, text="创建视图", command=self.create_views, width=30)
+        self.create_views_btn.pack(pady=5, ipady=5)
+
+        self.create_indexes_btn = ttk.Button(self.frame, text="创建索引", command=self.create_indexes, width=30)
+        self.create_indexes_btn.pack(pady=5, ipady=5)
+
+        self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.book_management), width=30)
+        self.back_btn.pack(pady=5, ipady=5)
+
+    def create_views(self):
+        success = backend.create_views()
+        if success:
+            messagebox.showinfo("成功", "视图创建成功。")
+        else:
+            messagebox.showerror("错误", "视图创建失败。")
+
+    def create_indexes(self):
+        success = backend.create_indexes()
+        if success:
+            messagebox.showinfo("成功", "索引创建成功。")
+        else:
+            messagebox.showerror("错误", "索引创建失败。")
 
     def show(self):
         self.frame.pack(fill='both', expand=True)
