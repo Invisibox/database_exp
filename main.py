@@ -89,6 +89,11 @@ class LibraryManagementApp:
         self.delete_student = DeleteStudentWindow(self.main_frame, self)
         self.delete_student.show()
 
+    def show_update_student_account(self):
+        self.student_management.hide()
+        self.update_student_account = UpdateStudentAccountWindow(self.main_frame, self)
+        self.update_student_account.show()
+
     def show_book_management(self):
         self.main_menu.hide()
         self.book_management = BookManagementWindow(self.main_frame, self)

@@ -1,7 +1,7 @@
 import pymysql
 from tkinter import messagebox
-from .student_management import add_student, get_all_students, get_student_by_id, update_student, delete_student
-from .book_management import add_book, get_all_books, get_book_by_id, update_book, delete_book
+from .student_management import *
+from .book_management import *
 from .db_connection import connect_db
 
 def validate_user(AdminID, password):

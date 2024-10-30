@@ -26,6 +26,9 @@ class StudentManagementWindow:
         self.delete_student_btn = ttk.Button(self.frame, text="删除学生", command=self.app.show_delete_student, width=30)
         self.delete_student_btn.pack(pady=5, ipady=5)  # 增加按钮高度
 
+        self.update_student_account_btn = ttk.Button(self.frame, text="更新学生账号", command=self.app.show_update_student_account, width=30)
+        self.update_student_account_btn.pack(pady=5, ipady=5)  # 增加按钮高度
+
         self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.main_menu), width=30)
         self.back_btn.pack(pady=5, ipady=5)  # 增加按钮高度
 
@@ -80,7 +83,7 @@ class AddStudentWindow:
 
         success = backend.add_student(student_data)
         if success:
-            messagebox.showinfo("成功", "学生添加成功。")
+            messagebox.showinfo("成功", "学生添加成功，初始密码为password。")
             self.app.go_back(self, self.app.student_management)
 
     def show(self):
@@ -235,6 +238,81 @@ class DeleteStudentWindow:
             self.app.go_back(self, self.app.student_management)
         else:
             messagebox.showerror("错误", "未找到学生或无法删除。")
+
+    def show(self):
+        self.frame.pack(fill='both', expand=True)
+
+    def hide(self):
+        self.frame.pack_forget()
+
+class UpdateStudentAccountWindow:
+    def __init__(self, master, app):
+        self.master = master
+        self.app = app
+        self.frame = ttk.Frame(self.master)
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.student_id_label = ttk.Label(self.frame, text="输入要更新的学生学号:")
+        self.student_id_label.pack(pady=5)
+        self.student_id_entry = ttk.Entry(self.frame)
+        self.student_id_entry.pack(pady=5)
+
+        self.fetch_btn = ttk.Button(self.frame, text="获取数据", command=self.fetch_account_data)
+        self.fetch_btn.pack(pady=5, ipady=5)  # 增加按钮高度
+
+        self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.student_management), width=15)
+        self.back_btn.pack(pady=10, ipady=5)  # 增加按钮高度
+
+    def fetch_account_data(self):
+        student_id = self.student_id_entry.get()
+        account_data = backend.get_student_account_by_id(student_id)
+        if account_data:
+            self.show_update_form(account_data)
+        else:
+            messagebox.showerror("错误", "未找到学生账号信息。")
+
+    def show_update_form(self, account_data):
+        self.update_window = tk.Toplevel(self.master)
+        self.update_window.title("更新学生账号信息")
+
+        labels = ['密码:', '安全问题:', '安全答案:', '剩余尝试次数:']
+        self.entries = {}
+
+        for idx, text in enumerate(labels):
+            label = ttk.Label(self.update_window, text=text)
+            label.grid(row=idx, column=0, padx=5, pady=5, sticky='e')
+
+            entry = ttk.Entry(self.update_window)
+            entry.grid(row=idx, column=1, padx=5, pady=5)
+            self.entries[text] = entry
+
+            if text == '密码:':
+                entry.insert(0, account_data['Password'])
+            elif text == '安全问题:':
+                entry.insert(0, account_data['SecurityQuestion'])
+            elif text == '安全答案:':
+                entry.insert(0, account_data['SecurityAnswer'])
+            elif text == '剩余尝试次数:':
+                entry.insert(0, account_data['RemainingAttempts'])
+
+        self.update_btn = ttk.Button(self.update_window, text="更新账号信息",
+                                    command=lambda: self.update_account_in_db(account_data['StudentID']), width=15)
+        self.update_btn.grid(row=len(labels), column=0, columnspan=2, pady=10, ipady=5)  # 增加按钮高度
+
+    def update_account_in_db(self, student_id):
+        account_data = (
+            self.entries['密码:'].get(),
+            self.entries['安全问题:'].get(),
+            self.entries['安全答案:'].get(),
+            self.entries['剩余尝试次数:'].get(),
+        )
+
+        success = backend.update_student_account(student_id, account_data)
+        if success:
+            messagebox.showinfo("成功", "学生账号信息更新成功。")
+            self.update_window.destroy()
+            self.app.go_back(self, self.app.student_management)
 
     def show(self):
         self.frame.pack(fill='both', expand=True)
