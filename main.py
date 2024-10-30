@@ -106,7 +106,7 @@ class LibraryManagementApp:
         self.add_book = AddBookWindow(self.main_frame, self)
         self.add_book.show()
 
-    def show_view_book(self):
+    def show_view_books(self):
         self.book_management.hide()
         self.view_books = ViewBooksWindow(self.main_frame, self)
         self.view_books.show()
@@ -121,7 +121,7 @@ class LibraryManagementApp:
         self.serch_book = SearchBooksWindow(self.main_frame, self)
         self.serch_book.show()
 
-    def show_view_book(self):
+    def show_manage_book(self):
         self.book_management.hide()
         self.view_book = ViewManagementWindow(self.main_frame, self)
         self.view_book.show

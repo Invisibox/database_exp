@@ -17,7 +17,7 @@ class BookManagementWindow:
         self.add_book_btn = ttk.Button(self.frame, text="添加书籍", command=self.app.show_add_book, width=30)
         self.add_book_btn.pack(pady=5, ipady=5)
 
-        self.view_books_btn = ttk.Button(self.frame, text="查看书籍", command=self.app.show_view_book, width=30)
+        self.view_books_btn = ttk.Button(self.frame, text="查看书籍", command=self.app.show_view_books, width=30)
         self.view_books_btn.pack(pady=5, ipady=5)
 
         self.update_book_btn = ttk.Button(self.frame, text="更新书籍", command=self.app.show_update_book, width=30)
@@ -29,7 +29,7 @@ class BookManagementWindow:
         self.search_books_btn = ttk.Button(self.frame, text="搜索书籍", command=self.app.show_search_book, width=30)
         self.search_books_btn.pack(pady=5, ipady=5)
 
-        self.view_management_btn = ttk.Button(self.frame, text="视图管理", command=self.app.show_view_book, width=30)
+        self.view_management_btn = ttk.Button(self.frame, text="视图管理", command=self.app.show_manage_book, width=30)
         self.view_management_btn.pack(pady=5, ipady=5)
 
         self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.main_menu), width=30)
@@ -272,13 +272,13 @@ class SearchBooksWindow:
         self.search_btn = ttk.Button(self.frame, text="搜索", command=self.search_books)
         self.search_btn.pack(pady=10, ipady=5)
 
+        self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.book_management), width=30)
+        self.back_btn.pack(pady=5, ipady=5)
+
         self.tree = ttk.Treeview(self.frame, columns=('书籍ID', '标题', '作者', '出版社', '译者', '类别', '到达时间', '库存'), show='headings')
         for col in self.tree['columns']:
             self.tree.heading(col, text=col)
         self.tree.pack(fill='both', expand=True)
-
-        self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.book_management), width=15)
-        self.back_btn.pack(pady=10, ipady=5)
 
     def search_books(self):
         book_id = self.id_entry.get()

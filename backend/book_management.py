@@ -115,22 +115,26 @@ def search_books(book_id=None, title=None, author=None, category=None):
         finally:
             connection.close()
 
-def count_books_by_category():
+def list_books_by_category():
     connection = connect_db()
     if connection:
         try:
             with connection.cursor() as cursor:
-                sql = """
-                    SELECT Category, COUNT(*) as count
-                    FROM bookinfo
-                    GROUP BY Category
-                """
-                cursor.execute(sql)
-                results = cursor.fetchall()
-                return results
+                # 获取所有分类
+                cursor.execute("SELECT DISTINCT Category FROM bookinfo")
+                categories = cursor.fetchall()
+
+                books_by_category = {}
+                for category in categories:
+                    category_name = category['Category']
+                    cursor.execute("SELECT * FROM bookinfo WHERE Category = %s", (category_name,))
+                    books = cursor.fetchall()
+                    books_by_category[category_name] = books
+
+                return books_by_category
         except Exception as e:
             messagebox.showerror("Error", str(e))
-            return []
+            return {}
         finally:
             connection.close()
 
