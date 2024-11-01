@@ -3,7 +3,6 @@ from tkinter import messagebox
 from tkinter import ttk
 import tkinter.font as tkfont
 import ctypes
-import sv_ttk
 import backend.backend as backend  # 导入后端函数
 from student import *
 from book import *
@@ -301,7 +300,6 @@ class StudentMenu:
 
 if __name__ == '__main__':
     root = tk.Tk()
-    sv_ttk.set_theme("light")
     style = ttk.Style()
 
     # 设置 DPI 感知
