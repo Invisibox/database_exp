@@ -4,6 +4,7 @@ from tkinter import ttk
 import tkinter.font as tkfont
 import ctypes
 import backend.backend as backend  # 导入后端函数
+from ttkbootstrap import Style
 from student import *
 from book import *
 from employee import *
@@ -138,10 +139,10 @@ class LibraryManagementApp:
         self.search_book = SearchBooksWindow(self.main_frame, self)
         self.search_book.show()
 
-    def show_manage_book(self):
+    def show_update_view(self):
         self.book_management.hide()
-        self.view_book = ViewManagementWindow(self.main_frame, self)
-        self.view_book.show
+        self.update_view = UpdateViewManageWindow(self.main_frame, self)
+        self.update_view.show()
 
     def show_delete_book(self):
         self.book_management.hide()
@@ -300,7 +301,7 @@ class StudentMenu:
 
 if __name__ == '__main__':
     root = tk.Tk()
-    style = ttk.Style()
+    style = Style(theme='morph')
 
     # 设置 DPI 感知
     ctypes.windll.shcore.SetProcessDpiAwareness(1)

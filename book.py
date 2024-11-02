@@ -29,7 +29,7 @@ class BookManagementWindow:
         self.search_books_btn = ttk.Button(self.frame, text="搜索书籍", command=self.app.show_search_book, width=30)
         self.search_books_btn.pack(pady=5, ipady=5)
 
-        self.view_management_btn = ttk.Button(self.frame, text="视图管理", command=self.app.show_manage_book, width=30)
+        self.view_management_btn = ttk.Button(self.frame, text="更新视图和索引", command=self.app.show_update_view, width=30)
         self.view_management_btn.pack(pady=5, ipady=5)
 
         self.borrowing_info_btn = ttk.Button(self.frame, text="借书信息", command=self.app.show_borrowing_info, width=30)
@@ -330,7 +330,7 @@ class SearchBooksWindow:
     def hide(self):
         self.frame.pack_forget()
 
-class ViewManagementWindow:
+class UpdateViewManageWindow:
     def __init__(self, master, app):
         self.master = master
         self.app = app
@@ -338,33 +338,34 @@ class ViewManagementWindow:
         self.create_widgets()
 
     def create_widgets(self):
-        self.label = ttk.Label(self.frame, text="视图管理")
+        self.label = ttk.Label(self.frame, text="更新视图和索引")
         self.label.pack(pady=10)
 
-        self.create_views_btn = ttk.Button(self.frame, text="创建视图", command=self.create_views, width=30)
-        self.create_views_btn.pack(pady=5, ipady=5)
+        self.update_views_btn = ttk.Button(self.frame, text="更新视图", command=self.update_views, width=30)
+        self.update_views_btn.pack(pady=5, ipady=5)
 
-        self.create_indexes_btn = ttk.Button(self.frame, text="创建索引", command=self.create_indexes, width=30)
-        self.create_indexes_btn.pack(pady=5, ipady=5)
+        self.update_index_btn = ttk.Button(self.frame, text="更新索引", command=self.update_index, width=30)
+        self.update_index_btn.pack(pady=5, ipady=5)
 
         self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.book_management), width=30)
         self.back_btn.pack(pady=5, ipady=5)
 
-    def create_views(self):
-        success = backend.create_views()
+    def update_views(self):
+        success = backend.update_views()
         if success:
-            messagebox.showinfo("成功", "视图创建成功。")
+            messagebox.showinfo("成功", "视图更新成功。")
         else:
-            messagebox.showerror("错误", "视图创建失败。")
+            messagebox.showerror("错误", "视图更新失败。")
 
-    def create_indexes(self):
-        success = backend.create_indexes()
+    def update_index(self):
+        success = backend.update_index()
         if success:
-            messagebox.showinfo("成功", "索引创建成功。")
+            messagebox.showinfo("成功", "索引更新成功。")
         else:
-            messagebox.showerror("错误", "索引创建失败。")
+            messagebox.showerror("错误", "索引更新失败。")
 
     def show(self):
+        print("Showing UpdateViewManageWindow")
         self.frame.pack(fill='both', expand=True)
 
     def hide(self):

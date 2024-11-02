@@ -256,3 +256,46 @@ def get_borrowing_info():
             return []
         finally:
             connection.close()
+
+def update_views():
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 更新视图的SQL语句
+                sql_statement = [
+                    "CREATE OR REPLACE VIEW view_all_books AS SELECT * FROM bookinfo;"
+                    "CREATE OR REPLACE VIEW view_books_by_category AS SELECT Category, COUNT(*) AS BookCount FROM bookinfo GROUP BY Category;"
+                    "CREATE OR REPLACE VIEW view_books_by_author AS SELECT Author, COUNT(*) AS BookCount FROM bookinfo GROUP BY Author;"
+                ]
+                for sql in sql_statement:
+                    cursor.execute(sql)
+            connection.commit()
+            return True
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return False
+        finally:
+            connection.close()
+
+def update_index():
+    connection = connect_db()
+    if connection:
+        try:
+            with connection.cursor() as cursor:
+                # 更新索引的SQL语句
+                sql_statements = [
+                    "CREATE INDEX idx_book_id ON bookinfo (BookID);",
+                    "CREATE INDEX idx_title ON bookinfo (Title);",
+                    "CREATE INDEX idx_author ON bookinfo (Author);",
+                    "CREATE INDEX idx_category ON bookinfo (Category);"
+                ]
+                for sql in sql_statements:
+                    cursor.execute(sql)
+            connection.commit()
+            return True
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+            return False
+        finally:
+            connection.close()
