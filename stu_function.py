@@ -178,7 +178,7 @@ class UpdateStudentInfoWindow:
         student_id = self.entries['学生ID:'].get()
         password = self.entries['密码:'].get()
 
-        if backend.validate_student(student_id, password):  # 假设有一个函数 verify_student 用于验证学生ID和密码
+        if backend.validate_student(student_id, password):
             self.show_update_fields()
         else:
             messagebox.showerror("错误", "学生ID或密码错误。")

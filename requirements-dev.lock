@@ -10,16 +10,32 @@
 #   universal: false
 
 -e file:.
+altgraph==0.17.4
+    # via pyinstaller
 cffi==1.17.1
     # via cryptography
 cryptography==43.0.3
     # via database-exp
+packaging==24.1
+    # via pyinstaller
+    # via pyinstaller-hooks-contrib
+pefile==2023.2.7
+    # via pyinstaller
 pillow==11.0.0
     # via ttkbootstrap
 pycparser==2.22
     # via cffi
+pyinstaller==6.11.0
+    # via database-exp
+pyinstaller-hooks-contrib==2024.9
+    # via pyinstaller
 pymysql==1.1.1
     # via database-exp
+pywin32-ctypes==0.2.3
+    # via pyinstaller
+setuptools==75.3.0
+    # via pyinstaller
+    # via pyinstaller-hooks-contrib
 sv-ttk==2.6.0
     # via database-exp
 ttkbootstrap==1.10.1
