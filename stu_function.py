@@ -222,3 +222,37 @@ class UpdateStudentInfoWindow:
 
     def hide(self):
         self.frame.pack_forget()
+class ListBooksByCategoryWindow:
+    def __init__(self, master, app):
+        self.master = master
+        self.app = app
+        self.frame = ttk.Frame(self.master)
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label = ttk.Label(self.frame, text="按类别列出书籍")
+        self.label.pack(pady=10)
+
+        self.list_btn = ttk.Button(self.frame, text="列出书籍", command=self.list_books_by_category)
+        self.list_btn.pack(pady=10, ipady=5)
+
+        self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.stu_menu), width=30)
+        self.back_btn.pack(pady=5, ipady=5)
+
+        self.tree = ttk.Treeview(self.frame, columns=('类别', '书籍数量'), show='headings')
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+        self.tree.pack(fill='both', expand=True)
+
+    def list_books_by_category(self):
+        categories = backend.list_books_by_category()
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        for category in categories:
+            self.tree.insert('', 'end', values=(category['Category'], category['BookCount']))
+
+    def show(self):
+        self.frame.pack(fill='both', expand=True)
+
+    def hide(self):
+        self.frame.pack_forget()

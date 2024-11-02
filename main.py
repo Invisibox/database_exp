@@ -154,6 +154,11 @@ class LibraryManagementApp:
         self.borrowing_info = BorrowingInfoWindow(self.main_frame, self)
         self.borrowing_info.show()
 
+    def show_borrowing_search(self):
+        self.book_management.hide()
+        self.search_borrowing = BorrowingSearchWindow(self.main_frame, self)
+        self.search_borrowing.show()
+
     ## 员工管理界面
     def show_employee_management(self):
         self.main_menu.hide()
@@ -242,6 +247,11 @@ class LibraryManagementApp:
         self.edit_student_info = UpdateStudentInfoWindow(self.main_frame, self)
         self.edit_student_info.show()
 
+    def list_books_by_category(self):
+        self.stu_menu.hide()
+        self.list_books_by_category = ListBooksByCategoryWindow(self.main_frame, self)
+        self.list_books_by_category.show()
+
     def go_back(self, current_window, previous_window):
         current_window.hide()
         previous_window.show()
@@ -289,6 +299,9 @@ class StudentMenu:
 
         self.return_btn = ttk.Button(self.frame, text="归还书籍", command=self.app.stu_return_book, width=30)
         self.return_btn.pack(pady=10, ipady=5)
+
+        self.list_btn = ttk.Button(self.frame, text="按类别列出书籍", command=self.app.list_books_by_category, width=30)
+        self.list_btn.pack(pady=10, ipady=5)
 
         self.info_btn = ttk.Button(self.frame, text="修改个人信息", command=self.app.edit_student_info, width=30)
         self.info_btn.pack(pady=10, ipady=5)

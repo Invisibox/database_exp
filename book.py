@@ -35,6 +35,9 @@ class BookManagementWindow:
         self.borrowing_info_btn = ttk.Button(self.frame, text="借书信息", command=self.app.show_borrowing_info, width=30)
         self.borrowing_info_btn.pack(pady=5, ipady=5)
 
+        self.borrowing_search_btn = ttk.Button(self.frame, text="借书查询", command=self.app.show_borrowing_search, width=30)
+        self.borrowing_search_btn.pack(pady=5, ipady=5)
+
         self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.main_menu), width=30)
         self.back_btn.pack(pady=5, ipady=5)
 
@@ -395,6 +398,48 @@ class BorrowingInfoWindow:
 
     def load_borrowing_info(self):
         borrowing_info = backend.get_borrowing_info()
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        for info in borrowing_info:
+            self.tree.insert('', 'end', values=(info['StudentName'], info['StudentID'], info['BookID'], info['BookTitle'], info['BorrowDate'], info['ReturnDate']))
+
+    def show(self):
+        self.frame.pack(fill='both', expand=True)
+
+    def hide(self):
+        self.frame.pack_forget()
+
+class BorrowingSearchWindow:
+    def __init__(self, master, app):
+        self.master = master
+        self.app = app
+        self.frame = ttk.Frame(self.master)
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label = ttk.Label(self.frame, text="借书信息")
+        self.label.pack(pady=10)
+
+        self.student_id_label = ttk.Label(self.frame, text="学生ID:")
+        self.student_id_label.pack(pady=5)
+        self.student_id_entry = ttk.Entry(self.frame)
+        self.student_id_entry.pack(pady=5)
+
+        self.search_btn = ttk.Button(self.frame, text="查询", command=self.search_borrowing_info)
+        self.search_btn.pack(pady=10, ipady=5)
+
+        columns = ('学生姓名', '学生ID', '书籍ID', '书籍名称', '借书时间', '还书时间')
+        self.tree = ttk.Treeview(self.frame, columns=columns, show='headings')
+        for col in columns:
+            self.tree.heading(col, text=col)
+        self.tree.pack(fill='both', expand=True)
+
+        self.back_btn = ttk.Button(self.frame, text="返回", command=lambda: self.app.go_back(self, self.app.book_management), width=30)
+        self.back_btn.pack(pady=10, ipady=5)
+
+    def search_borrowing_info(self):
+        student_id = self.student_id_entry.get()
+        borrowing_info = backend.get_borrowing_info_by_student(student_id)
         for row in self.tree.get_children():
             self.tree.delete(row)
         for info in borrowing_info:
