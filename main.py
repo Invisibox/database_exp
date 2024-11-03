@@ -35,9 +35,13 @@ class LoginWindow:
         self.password_label.pack(pady=5)
         self.password_entry = ttk.Entry(self.frame, show="*")
         self.password_entry.pack(pady=5)
+        self.password_entry.bind('<Return>', self.on_enter_key)  # 绑定回车键事件
 
         self.login_btn = ttk.Button(self.frame, text="登录", command=self.login)
         self.login_btn.pack(pady=10, ipady=5)  # 增加按钮高度
+
+    def on_enter_key(self, event):
+        self.login()
 
     def login(self):
         role = self.role_combobox.get()
@@ -314,7 +318,7 @@ class StudentMenu:
 
 if __name__ == '__main__':
     root = tk.Tk()
-    style = Style(theme='morph')
+    style = Style(theme='litera')
 
     # 设置 DPI 感知
     ctypes.windll.shcore.SetProcessDpiAwareness(1)

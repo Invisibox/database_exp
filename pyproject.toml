@@ -7,8 +7,6 @@ authors = [
 ]
 dependencies = [
     "pymysql>=1.1.1",
-    "cryptography>=43.0.3",
-    "sv-ttk>=2.6.0",
     "ttkbootstrap>=1.10.1",
     "pyinstaller>=6.11.0",
 ]
