@@ -10,8 +10,14 @@
 #   universal: false
 
 -e file:.
+cffi==1.17.1
+    # via cryptography
+cryptography==43.0.3
+    # via database-exp
 pillow==11.0.0
     # via ttkbootstrap
+pycparser==2.22
+    # via cffi
 pymysql==1.1.1
     # via database-exp
 ttkbootstrap==1.10.1
